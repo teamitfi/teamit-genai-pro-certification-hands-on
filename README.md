@@ -241,24 +241,26 @@ Strong:  Plan one CRM vertical slice from PRODUCT_BRIEF.md and BUILD_PLAN.md.
 
 ### Lab S1.4 — Plan and start Slice 1 (17 min)
 
-**Goal.** Use `crm-slice-planner` on the Accounts & Contacts slice; observe how a sub-agent keeps the parent context clean; produce evidence. **Don't try to finish the slice.**
+**Goal.** Use `crm-slice-planner` on the Accounts & Contacts slice; observe how separate implementer and reviewer sub-agents keep the parent context clean; produce evidence. **Don't try to finish the slice.**
 
 **Do.**
 
 1. Invoke the planner Skill on the prompt: "let's plan the Accounts & Contacts slice."
 2. Read the produced `TASK.md` and `DONE_CRITERIA.md`. Push back on anything overscoped.
-3. Have the agent implement just enough that `tests/accounts.spec.ts` passes.
-4. **Dispatch one sub-agent in parallel.** Pick a small isolatable task (write the integration test for `GET /accounts/:id`, or scaffold the contacts route stub) and hand it to a sub-agent rather than the parent session:
-   - **Claude Code:** invoke the Task tool with a self-contained prompt. The sub-agent's full transcript stays in its context; you get a summary back.
-   - **Cursor / others with parallel chats:** open a second chat in the same workspace.
-   - **Harness-agnostic fallback:** `git worktree add ../crm-subagent` and start a second harness session in the worktree.
+3. Tell your harness to run **two separate sub-agents** while the parent session only coordinates:
+   - **Implementer / developer sub-agent:** implement just enough that `tests/accounts.spec.ts` passes, or take one small isolatable task such as `GET /accounts/:id`.
+   - **Reviewer sub-agent:** independently review the plan and the implementer's resulting diff against `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, and `DONE_CRITERIA.md`; return `accept`, `revise`, or `reject` with concrete findings.
+4. Use your harness's equivalent of parallel sub-agent work:
+   - **Claude Code:** invoke the Task tool twice with self-contained prompts — one developer prompt and one reviewer prompt.
+   - **Cursor / others with parallel chats:** open two separate chats in the same workspace, one labeled developer and one labeled reviewer.
+   - **Harness-agnostic fallback:** create separate `git worktree`s for the developer and reviewer sessions.
 
-   Note in your evidence: how big was the sub-agent's transcript vs. the summary that came back? That gap is the point — the parent stayed clean.
+   Note in your evidence: how large were the sub-agent transcripts vs. the summaries that came back? That gap is the point — the parent stayed clean.
 
 5. Commit. Do not continue past this point — Session 2 starts from a known state.
-6. Write a one-paragraph `HANDOFF.md`: what you completed, what's open, the next recommended slice. Include one line on what the sub-agent did and what came back.
+6. Write a one-paragraph `HANDOFF.md`: what you completed, what's open, the next recommended slice. Include one line each on what the developer sub-agent and reviewer sub-agent did and what came back.
 
-**Pass criterion.** The Skill was actually invoked (not bypassed); the test passes; `HANDOFF.md` is specific enough that a stranger could continue _and_ names what the sub-agent contributed.
+**Pass criterion.** The Skill was actually invoked (not bypassed); the test passes; `HANDOFF.md` is specific enough that a stranger could continue _and_ names what both sub-agents contributed.
 
 **While you wait:**
 
