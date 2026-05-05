@@ -27,7 +27,7 @@ npm install
 npm test
 ```
 
-You should see one failing test (`GET /accounts returns the seeded accounts`). That's expected — your first slice will fix it.
+You should see one failing test (`GET /accounts > returns the seeded accounts`). That's expected — your first slice will fix it.
 
 ## What you'll build
 
@@ -62,11 +62,11 @@ The cert is awarded when you finish both sessions' labs and complete the final 6
 ```
 .
 ├── README.md                  # This file
-├── PRODUCT_BRIEF.md           # Empty — Lab S1.1 fills it
-├── AGENTS.md                  # Empty — Lab S1.2 fills it (use CLAUDE.md if you prefer)
+├── PRODUCT_BRIEF.md           # Placeholder — Lab S1.1 fills it
+├── AGENTS.md                  # Placeholder — Lab S1.2 fills it (use CLAUDE.md if you prefer)
 ├── ARCHITECTURE.md            # Optional placeholder — populate if the repo grows
 ├── BUILD_PLAN.md              # Slice order — already populated, refer to it
-├── WORKFLOW.md                # Empty — populate during Session 1 if time
+├── WORKFLOW.md                # Placeholder — populate during Session 1 if time
 ├── DOMAIN_MODEL.md            # Reference — read it before writing skills
 ├── .claude/
 │   ├── settings.json          # Minimal baseline (deny .env / secrets reads & writes)
