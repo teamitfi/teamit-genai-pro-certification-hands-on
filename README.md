@@ -8,8 +8,8 @@
 
 You need:
 
-- **A coding harness, authenticated.** Claude Code (Pro+) is recommended — the Skills layer the labs build on is most natively supported there. Other harnesses are accepted: Codex CLI, OpenCode, Pi, Cursor, Aider, Cline/Roo/Continue, Copilot Agent Mode. If you bring something else, see [Harness translation](#harness-translation) below.
-- **A second harness for Session 2** (recommended). Copilot in VS Code or JetBrains is the easiest path for Lab S2.4.
+- **A coding harness, authenticated.** Claude Code (Pro+) is recommended — the Skills layer the labs build on is most natively supported there. Other harnesses are accepted: Codex CLI, OpenCode, Pi, Cursor, Aider, Cline/Continue, Copilot Agent Mode. If you bring something else, see [Harness translation](#harness-translation) below.
+- **A second harness for Session 2** (optional). The "while you wait" task on Lab S2.1 includes a Copilot translation — Copilot in VS Code or JetBrains is the easiest path if you take it. Skip if your client doesn't use Copilot.
 - **Node 20+** installed (`node --version`).
 - **A laptop you can install dependencies on.** No office-wifi allowlist is in place; internet egress is open.
 
@@ -141,7 +141,7 @@ Each top-level file/dir maps to a layer of the agent's persistent context. When 
 
 ---
 
-### Lab S1.2 — Repo Map (10 min)
+### Lab S1.2 — Repo Map (12 min)
 
 **Goal.** Produce the repo contract — the file the agent reads first. This file is the most important agent-instruction artifact in the repo, and every harness has its own conventional name for it.
 
@@ -162,7 +162,16 @@ Pick the right name for your harness. If you swap harness mid-engagement, the _c
 
 Then run a **fresh-session test:** start a new session and ask the agent to summarize the project. The summary must match your mental model.
 
-**Pass criterion.** Fresh-session summary identifies stack, dev-loop, and at least one off-limits file by name. Pair-reviewer also asks: "what's the equivalent of this file in one non-Claude harness?" — you must be able to name it.
+**Also: configure `context7` MCP in this repo (2 min).** context7 gives the agent live docs for Fastify, Vitest, and the Anthropic SDK during the rest of the labs. You'll _use_ this MCP before you _build_ one in Session 2.
+
+Configure it **project-scoped, not globally.** A project-scoped MCP config lives in a tracked file at the repo root and is part of the diff a reviewer sees — same audit surface as `AGENTS.md` / `CLAUDE.md`. A user-scoped (global) MCP config is invisible to reviewers, which is exactly the supply-chain blind spot cert checklist item 4 calls out.
+
+- Claude Code: `claude mcp add --scope project context7 -- npx -y @upstash/context7-mcp@latest` — writes a `.mcp.json` at the repo root. Commit it.
+- Other harnesses: see context7's [client list](https://context7.com/docs/resources/all-clients) for the per-harness config path (Cursor: `.cursor/mcp.json`; Codex CLI / OpenCode / others have their own committed config files). Avoid any "user settings" or "global" install path. Cross-reference [Harness translation](#harness-translation).
+
+**Verify:** ask your agent "use context7 to fetch the latest Fastify route docs." The agent must call the context7 tool (visible in the tool log) and return real docs — not training-data recall. If the tool isn't called, fix the wiring before continuing to S1.3.
+
+**Pass criterion.** Fresh-session summary identifies stack, dev-loop, and at least one off-limits file by name. `context7` returned live docs in the verification check, and the MCP config is in a tracked file at the repo root, not in user-global settings. Pair-reviewer also asks: "what's the equivalent of this file in one non-Claude harness?" — you must be able to name it.
 
 **While you wait:**
 
@@ -176,7 +185,9 @@ Then run a **fresh-session test:** start a new session and ask the agent to summ
 
 **Goal.** Build `crm-slice-planner` — your first reusable Skill.
 
-**Do.** Create `.claude/skills/crm-slice-planner/SKILL.md` (or your harness's equivalent — see [Harness translation](#harness-translation)). Use the seven-question template:
+**Drive the agent to write this — don't hand-author it.** The lesson of every Skill lab is the same: in a client engagement you don't type SKILL.md by hand, you brief the agent, read its draft, and push back. Open a session, point it at `PRODUCT_BRIEF.md`, `BUILD_PLAN.md`, and `DOMAIN_MODEL.md`, and ask it to draft `.claude/skills/crm-slice-planner/SKILL.md`. Iterate until it matches the shape below. If you copy-paste the template verbatim you've passed the file check and failed the lab.
+
+**Do.** Create `.claude/skills/crm-slice-planner/SKILL.md` (or your harness's equivalent — see [Harness translation](#harness-translation)) by driving the agent toward this seven-question shape:
 
 ```markdown
 ---
@@ -270,7 +281,9 @@ Strong:  Plan one CRM vertical slice from PRODUCT_BRIEF.md and BUILD_PLAN.md.
 
 **Goal.** Build `crm-reviewer` — a Skill that reviews a diff and returns an explicit decision.
 
-**Do.** Create `.claude/skills/crm-reviewer/SKILL.md`. It must produce four sections:
+**Drive the agent to write this Skill — don't hand-author it.** Same rule as Lab S1.3: brief the agent on the four output sections and the inputs it will read, have it draft `.claude/skills/crm-reviewer/SKILL.md`, then judge the draft against the pass criterion. The deliverable is your judgment of an agent-produced Skill, not a Skill you typed.
+
+**Do.** Have the agent create `.claude/skills/crm-reviewer/SKILL.md`. It must produce four sections:
 
 - **Findings** — specific issues with file/line refs
 - **Missing evidence** — what was claimed but not demonstrated
@@ -285,6 +298,7 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 
 1. Sketch one _additional_ reviewer Skill for your current client (e.g., `legacy-migration-reviewer`, `accessibility-reviewer`); write its description.
 2. List two failure modes from the deck slide "Where Agents Fail in a CRM Build" your reviewer should catch.
+3. **Copilot translation (optional, was Lab S2.4 in earlier versions of this curriculum).** Translate `crm-reviewer` to `.github/agents/crm-reviewer.md` with YAML frontmatter and Copilot-flavored phrasing. Add a short `.github/copilot-instructions.md` that points at the agent and inherits conventions from your `AGENTS.md` / `CLAUDE.md`. Run Copilot's Code Review Agent on the `seeded-bad-build` diff and save 5 bullets in `lab-s2-1-copilot-comparison.md` — where Copilot caught what your Skill didn't, and vice versa. Recommended for anyone whose client uses Copilot day-to-day.
 
 ---
 
@@ -343,22 +357,49 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 
 ---
 
-### Lab S2.4 — Copilot translation (12 min)
+### Lab S2.4 — Build a minimal CRM MCP server (12 min)
 
-**Goal.** Translate one Skill to its Copilot equivalent. Demonstrates cross-tool fluency.
+**Goal.** Build an MCP server that exposes one read-only tool, `list_accounts`, backed by your Slice 1 accounts data. Connect it to your harness and have the agent answer a CRM question via the tool — not via direct file read. By the end of the lab, you've vetted an MCP server you wrote yourself; checklist item 4 ("MCP whitelist — what's installed and which are vetted?") now has a hands-on referent.
+
+**Drive the agent to write this — don't hand-author it.** Same rule as Labs S1.3 and S2.1: brief the agent on the contract below, have it draft the server, and judge the draft against the pass criterion. The deliverable is your judgment of an agent-produced MCP server, not one you typed.
+
+**Contract.**
+
+- One tool: `list_accounts`. No input args. Returns the seeded accounts your `/accounts` route already serves.
+- No write tools.
+- No forbidden fields. Strip `Opportunity.value` if/when you extend the domain. Reject any draft that introduces `invoiceAmount` (see `DOMAIN_MODEL.md` § Forbidden in API).
+- Stable JSON Schema for the tool input (even though it's empty) — agents rely on the schema for routing.
+
+**Pick your stack.** Whichever you're most fluent in:
+
+- TypeScript: `npm i @modelcontextprotocol/sdk`; server in `mcp/crm-server.ts`.
+- Python: `pip install mcp` (or `uv add mcp`); server in `mcp/crm_server.py`.
+- Go: `go get github.com/metoro-io/mcp-golang`; server in `mcp/crm-server.go`.
+- Other: see https://modelcontextprotocol.io for SDKs. Document your choice and the wiring in your evidence file.
 
 **Do.**
 
-1. Translate `crm-reviewer` to `.github/agents/crm-reviewer.md` with YAML frontmatter and Copilot-flavored phrasing.
-2. Add a short `.github/copilot-instructions.md` that points at the agent and inherits conventions from your `AGENTS.md`/`CLAUDE.md`.
-3. Run Copilot's Code Review Agent on the `seeded-bad-build` diff. Save the output as `lab-s2-4-comparison.md` — 5 bullets: where Copilot caught what your Skill didn't, and vice versa.
+1. Have the agent scaffold the server per the contract. Use `context7` (configured in S1.2) to fetch the latest MCP SDK docs for your language — the SDKs change faster than model training cutoffs.
+2. Register the server with your harness — **project-scoped, committed**, same rule as `context7` in S1.2. The `.mcp.json` (or harness equivalent) must show up in your diff so a reviewer can see what tools the agent gained. Claude Code:
 
-**Pass criterion.** Translated agent runs; comparison names at least one concrete difference.
+   ```
+   claude mcp add --scope project crm -- <runner> <path-to-server>
+   # e.g.,
+   claude mcp add --scope project crm -- node mcp/crm-server.ts
+   claude mcp add --scope project crm -- python mcp/crm_server.py
+   ```
+
+   Other harnesses: see [Harness translation](#harness-translation) and [context7's client list](https://context7.com/docs/resources/all-clients) for per-harness config file paths.
+
+3. Start a fresh session and ask: "use the crm MCP to list our accounts and tell me which one renews soonest." The agent must call `list_accounts` (visible in the tool-call log), not read `seeds/accounts.json` directly.
+4. Vet your own server through cert checklist item 4. In one paragraph in `lab-s2-4-mcp-evidence.md`, answer: who would I let install this MCP? what data does it leak? what would a reviewer ask me before whitelisting? Name your stack, the wiring command you used, and the tracked config file (e.g., `.mcp.json`).
+
+**Pass criterion.** Tool call appears in the harness log; agent answers the renewal question correctly via the tool; the MCP config is in a tracked repo file (e.g., `.mcp.json`), not user-global; evidence file names your stack, the wiring command, the tracked config file, and at least two concrete vetting questions a reviewer would ask before whitelisting your server.
 
 **While you wait:**
 
-1. Write one sentence per harness: "I would pick this one when …"
-2. Note one Copilot governance feature (Agent Control Plane, 180-day audit logs, EU Data Residency) that would matter to a current client.
+1. Add a second tool: `get_account_by_id`. Notice how scope creep happens — write down what you'd add next and why a reviewer should push back.
+2. Sketch the same server in a second language (10 lines, not running) — note where the SDK shape diverges. Same cross-tool fluency lesson as the old Copilot-translation lab, applied to MCP.
 
 ---
 
@@ -369,7 +410,7 @@ At the end of Session 2 you'll get 60 seconds to walk the **Teamit 6-item client
 1. **Data residency** — what would change if this client required EU-only inference?
 2. **Permission & hooks** — what blocks a `.env` write today?
 3. **Logging** — where would agent actions be logged for a 90-day audit trail?
-4. **MCP whitelist** — what MCP servers are installed? Which are vetted?
+4. **MCP whitelist** — what MCP servers are installed? Which are vetted? _(Open `.mcp.json` and read the entries: `context7` from Lab S1.2 and `crm` from Lab S2.4. Both live in the repo by design — anything not in the diff isn't whitelisted. Apply the same lens to anything else you'd install.)_
 5. **Insurance** — what's the "Silent AI" PI exclusion question you'd ask the client?
 6. **Incident response** — under Kyberturvallisuuslaki 124/2025, who is notified within 24 hours, and who at the client owns that?
 
@@ -381,16 +422,18 @@ Have one-line answers ready. "I don't know" is acceptable for at most one item; 
 
 If you're not using Claude Code, produce the equivalent artifact and the lab passes — graders score intent, not file extension.
 
-| Intent                     | Claude Code                      | Equivalents                                                                                                                               | Required artifact (what makes the lab pass)                                                    |
-| -------------------------- | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| Initialize project context | `/init`                          | First inspection prompt; or `--read CONVENTIONS.md` (Aider)                                                                               | An agent-context file in the repo                                                              |
-| Project context file       | `CLAUDE.md`                      | `AGENTS.md` (Codex CLI / OpenCode / others) · `.cursorrules` (Cursor)                                                                     | One of the above, ≤ 200 lines                                                                  |
-| Reusable Skill             | `.claude/skills/<name>/SKILL.md` | `.cursor/rules/*.mdc` · OpenCode agents · Aider conventions snippets · **fallback:** versioned prompt templates in `prompts/`             | A reusable file with name, description, inputs, workflow, output format, evidence requirements |
-| Compress / reset context   | `/compact`                       | Start a new session                                                                                                                       | A clean context for the next task                                                              |
-| Cost / token check         | `/cost`                          | Codex CLI usage command; harness UI; provider dashboard                                                                                   | A noted cost number per lab                                                                    |
-| Deep review                | `/review`, `/ultrareview`        | Explicit "review for security, perf, edge cases" prompt; high-effort tier if available                                                    | A review report committed as `lab-XX-review.md`                                                |
-| Pre/post tool gates        | hook events                      | OpenCode/Codex config wrappers · Aider test command + commit gate · **fallback:** `.git/hooks/pre-commit` + `scripts/lab-s2-3-wrapper.sh` | A working hook config or git-hook + wrapper                                                    |
-| Subagents / parallel work  | Task tool                        | Multiple terminal sessions in `git worktree`s · Cursor parallel chats                                                                     | Evidence of true parallelism (timestamps overlap)                                              |
+| Intent                                                                   | Claude Code                                                              | Equivalents                                                                                                                                                                                                                        | Required artifact (what makes the lab pass)                                                            |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Initialize project context                                               | `/init`                                                                  | First inspection prompt; or `--read CONVENTIONS.md` (Aider)                                                                                                                                                                        | An agent-context file in the repo                                                                      |
+| Project context file                                                     | `CLAUDE.md`                                                              | `AGENTS.md` (Codex CLI / OpenCode / others) · `.cursorrules` (Cursor)                                                                                                                                                              | One of the above, ≤ 200 lines                                                                          |
+| Reusable Skill                                                           | `.claude/skills/<name>/SKILL.md`                                         | `.cursor/rules/*.mdc` · OpenCode agents · Aider conventions snippets · **fallback:** versioned prompt templates in `prompts/`                                                                                                      | A reusable file with name, description, inputs, workflow, output format, evidence requirements         |
+| Compress / reset context                                                 | `/compact`                                                               | Start a new session                                                                                                                                                                                                                | A clean context for the next task                                                                      |
+| Cost / token check                                                       | `/cost`                                                                  | Codex CLI usage command; harness UI; provider dashboard                                                                                                                                                                            | A noted cost number per lab                                                                            |
+| Deep review                                                              | `/review`, `/ultrareview`                                                | Explicit "review for security, perf, edge cases" prompt; high-effort tier if available                                                                                                                                             | A review report committed as `lab-XX-review.md`                                                        |
+| Pre/post tool gates                                                      | hook events                                                              | OpenCode/Codex config wrappers · Aider test command + commit gate · **fallback:** `.git/hooks/pre-commit` + `scripts/lab-s2-3-wrapper.sh`                                                                                          | A working hook config or git-hook + wrapper                                                            |
+| Subagents / parallel work                                                | Task tool                                                                | Multiple terminal sessions in `git worktree`s · Cursor parallel chats                                                                                                                                                              | Evidence of true parallelism (timestamps overlap)                                                      |
+| Install third-party MCP — _project-scoped, tracked_ (S1.2 context7 step) | `claude mcp add --scope project <name> -- <runner>` (writes `.mcp.json`) | Cursor: `.cursor/mcp.json` · Codex CLI / OpenCode / others: see [context7 client list](https://context7.com/docs/resources/all-clients) for the per-harness config file path. **Avoid user-global installs** — they bypass review. | A `context7` tool callable from a fresh session, AND a config file in the diff (e.g., `.mcp.json`)     |
+| Register your own MCP — _project-scoped, tracked_ (S2.4 build)           | `claude mcp add --scope project crm -- <runner> <path>`                  | Cursor: edit `.cursor/mcp.json` to point at the local script · Codex CLI / OpenCode: their committed MCP config file · **fallback:** any harness with an MCP-server config that lives in the repo, not in user settings            | A `crm` MCP server reachable by your harness; tool calls visible in the log; wiring config in the diff |
 
 If your harness genuinely cannot satisfy a lab intent, document the gap in your evidence file. Recognizing the gap is itself part of the certification — tool fluency includes knowing what your tool can't do.
 
