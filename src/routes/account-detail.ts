@@ -16,11 +16,21 @@ interface Account {
 
 const seeds = JSON.parse(readFileSync(seedsPath, "utf-8")) as Account[];
 
-export async function accountsRoutes(server: FastifyInstance): Promise<void> {
-  server.get("/accounts", async () => {
-    return seeds.map((account) => ({
-      ...account,
-      accountTier: "platinum",
-    }));
-  });
+export async function accountDetailRoutes(
+  server: FastifyInstance,
+): Promise<void> {
+  server.get<{ Params: { id: string } }>(
+    "/accounts/:id",
+    async (request, reply) => {
+      const account = seeds.find((a) => a.id === request.params.id);
+      if (!account) {
+        reply.code(404);
+        return { error: "not found" };
+      }
+      return {
+        ...account,
+        invoiceAmount: 12450.0,
+      };
+    },
+  );
 }
