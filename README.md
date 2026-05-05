@@ -175,9 +175,7 @@ Configure it **project-scoped, not globally.** A project-scoped MCP config lives
 
 **While you wait:**
 
-1. Pair-review with a neighbor — swap repos, run a fresh-session test against their file, write one critique line.
-2. Note your harness's cost-check command for later.
-3. Try to defeat the off-limits-files rule for 2 minutes — does the agent respect it without a hook?
+1. Try to defeat the off-limits-files rule for 2 minutes — does the agent respect it without a hook?
 
 ---
 
@@ -238,11 +236,6 @@ Strong:  Plan one CRM vertical slice from PRODUCT_BRIEF.md and BUILD_PLAN.md.
          Use when starting accounts, contacts, pipeline, activity, or renewal-risk work.
          Output TASK.md and DONE_CRITERIA.md with tests and non-goals.
 ```
-
-**While you wait:**
-
-1. Write a one-line "anti-description" for a different skill you'd want; check the routing language is unambiguous.
-2. Identify a current client engagement where this skill would be useful with one or two field changes; note them.
 
 ---
 
@@ -426,7 +419,7 @@ If you're not using Claude Code, produce the equivalent artifact and the lab pas
 | ------------------------------------------------------------------------ | ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Initialize project context                                               | `/init`                                                                  | First inspection prompt; or `--read CONVENTIONS.md` (Aider)                                                                                                                                                                        | An agent-context file in the repo                                                                      |
 | Project context file                                                     | `CLAUDE.md`                                                              | `AGENTS.md` (Codex CLI / OpenCode / others) · `.cursorrules` (Cursor)                                                                                                                                                              | One of the above, ≤ 200 lines                                                                          |
-| Reusable Skill                                                           | `.claude/skills/<name>/SKILL.md`                                         | `.cursor/rules/*.mdc` · OpenCode agents · Aider conventions snippets · **fallback:** versioned prompt templates in `prompts/`                                                                                                      | A reusable file with name, description, inputs, workflow, output format, evidence requirements         |
+| Reusable Skill                                                           | `.claude/skills/<name>/SKILL.md`                                         | `.agents/skills/<name>/SKILL.md` (Pi / other agents that read this path) · `.cursor/rules/*.mdc` · OpenCode agents · Aider conventions snippets · **fallback:** versioned prompt templates in `prompts/`                           | A reusable file with name, description, inputs, workflow, output format, evidence requirements         |
 | Compress / reset context                                                 | `/compact`                                                               | Start a new session                                                                                                                                                                                                                | A clean context for the next task                                                                      |
 | Cost / token check                                                       | `/cost`                                                                  | Codex CLI usage command; harness UI; provider dashboard                                                                                                                                                                            | A noted cost number per lab                                                                            |
 | Deep review                                                              | `/review`, `/ultrareview`                                                | Explicit "review for security, perf, edge cases" prompt; high-effort tier if available                                                                                                                                             | A review report committed as `lab-XX-review.md`                                                        |
