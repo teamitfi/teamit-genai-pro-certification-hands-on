@@ -136,9 +136,8 @@ Each top-level file/dir maps to a layer of the agent's persistent context. When 
 
 **While you wait** (any of):
 
-1. Pick one current Teamit client; write 2 sentences on how this brief would change for them.
-2. Draft one acceptance criterion you'd ask the client to sign off on.
-3. List the three things you're most worried the agent will get wrong, given the brief.
+1. Draft one acceptance criterion you'd ask the client to sign off on.
+2. List the three things you're most worried the agent will get wrong, given the brief.
 
 ---
 
