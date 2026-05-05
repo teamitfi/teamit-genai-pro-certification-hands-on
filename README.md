@@ -50,10 +50,10 @@ All five Skills should be portable into a real client engagement with field rena
 
 ## Session map
 
-| Session        | Lecture (60 min)                                              | Hands-on (60 min)                                                    |
-| -------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 1 (2026-05-06) | Landscape, Claude Code deep dive, harness theory              | Labs S1.1 → S1.4 — product brief, repo map, first Skill, first slice |
-| 2 (date TBC)   | Skills-first delivery, security, governance, Teamit checklist | Labs S2.1 → S2.4 + cert walkthrough                                  |
+| Session                                       | Lecture (60 min)                                              | Hands-on (60 min)                                                    |
+| --------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 1 (Group 1: 2026-05-06 · Group 2: 2026-05-07) | Landscape, Claude Code deep dive, harness theory              | Labs S1.1 → S1.4 — product brief, repo map, first Skill, first slice |
+| 2 (Group 1: 2026-05-13 · Group 2: 2026-05-12) | Skills-first delivery, security, governance, Teamit checklist | Labs S2.1 → S2.4 + cert walkthrough                                  |
 
 The cert is awarded when you finish both sessions' labs and complete the final 60-second walkthrough of the Teamit 6-item client checklist.
 
