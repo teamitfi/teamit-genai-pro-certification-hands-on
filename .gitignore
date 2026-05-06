@@ -9,3 +9,5 @@ secrets/
 .DS_Store
 .idea/
 .vscode/
+.agent-work/
+.agentbridge/
