@@ -1,0 +1,20 @@
+{"timestamp":"2026-05-06T11:22:58.433820579Z","prompt":"Which account is running this?","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T11:26:01.869567945Z","prompt":"How do I restrict Claude Code's access to certain directories?","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T11:27:56.222790961Z","prompt":"Generate me a global settings.json for claude that denies Claude access to everything in $HOME/Projects/Wärtsilä","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T11:39:39.292269243Z","prompt":"What's the current context this claude cli session can read and write?","model":"sonnet","toolCalls":5}
+{"timestamp":"2026-05-06T11:41:13.487451205Z","prompt":"Does cloud have sudo permissions?","model":"sonnet","toolCalls":1}
+{"timestamp":"2026-05-06T11:42:07.992249858Z","prompt":"How do I remove sudo rights from claude?","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T12:07:13.631413614Z","prompt":"/init","model":"sonnet","toolCalls":15}
+{"timestamp":"2026-05-06T12:24:42.028131565Z","prompt":"Start S1.1 (Product Brief)","model":"sonnet","toolCalls":3}
+{"timestamp":"2026-05-06T12:36:44.512757644Z","prompt":"Let's move on to 1.2.","model":"sonnet","toolCalls":10}
+{"timestamp":"2026-05-06T12:44:45.583306786Z","prompt":"Run the remaining steps. Rename AGENTS.md to CLAUDE.md","model":"sonnet","toolCalls":7}
+{"timestamp":"2026-05-06T12:47:09.263610376Z","prompt":"/?","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T12:50:20.151685935Z","prompt":"Summarise this project.","model":"sonnet","toolCalls":5}
+{"timestamp":"2026-05-06T12:50:58.341570629Z","prompt":"What's next to build?","model":"sonnet","toolCalls":3}
+{"timestamp":"2026-05-06T12:51:48.812547895Z","prompt":"use context7 to fetch the latest Fastify route docs.","model":"sonnet","toolCalls":4}
+{"timestamp":"2026-05-06T12:53:05.261640943Z","prompt":"Try Context7 again later","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T12:54:30.594531971Z","prompt":"Try context7 again.","model":"sonnet","toolCalls":1}
+{"timestamp":"2026-05-06T12:54:59.389715461Z","prompt":"Why did it not work on the first try?","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T12:55:57.249987203Z","prompt":"Let's move on to S1.3","model":"sonnet","toolCalls":3}
+{"timestamp":"2026-05-06T13:02:14.255813399Z","prompt":"Change workflow directove so that DOMAIN_MODEL is only changed if requested by the user or if the agent deems a task impossible or overly complex without the change. In either case, ask for user appro","model":"sonnet","toolCalls":0}
+{"timestamp":"2026-05-06T13:02:37.971546379Z","prompt":"Yes, write it","model":"sonnet","toolCalls":1}
