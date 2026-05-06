@@ -1,4 +1,4 @@
-# Product Brief
+# Product Brief — Teamit CRM
 
 This brief is the agent-readable product boundary for the training CRM. For fuller business background, see `MRD.md`.
 
