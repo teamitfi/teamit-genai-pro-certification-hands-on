@@ -1,0 +1,3 @@
+Read and follow `AGENTS.md` before making plans, code changes, reviews, or commits in this repository.
+
+`AGENTS.md` is the source of truth for stack conventions, dev-loop commands, product/domain boundaries, UI expectations, and off-limits files.

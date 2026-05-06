@@ -1,69 +1,43 @@
 # Product Brief
 
-This brief is the agent-readable product boundary for the training CRM. For fuller business background, see `MRD.md`.
+A small **CRM for account managers**: list and drill into customers, pipeline, activity, and renewal risk. This product is the training vehicle for a reusable agent Skill library; scope stays disciplined so agents and reviewers share one boundary.
 
 ## Target user
 
-Primary users are account managers at Kielo Digital Oy, a fictional Finnish SME IT consultancy. They manage B2B customer relationships, consulting opportunities, follow-ups, and renewals.
-
-Secondary users are the managing director, delivery leads, and sales operations staff who need shared customer context without turning the product into an enterprise CRM suite.
+**Account managers** (AMs): people who own a portfolio of customer relationships, track renewals, and prioritize outreach. They need fast answers from structured data—not a full admin or configure-everything platform.
 
 ## Core workflows
 
-The CRM helps users answer five questions:
+The product must support answering these questions, in order of build priority where noted in `BUILD_PLAN.md`:
 
-1. Who are our customers?
-2. Who should we contact next?
-3. Which opportunities are moving?
-4. Which renewals are at risk?
-5. What changed, and can we trust it?
-
-## Product boundary
-
-This is a small training CRM inspired by common CRM concepts from Salesforce, HubSpot, and Microsoft Dynamics, but intentionally much simpler.
-
-In scope:
-
-- Customer and contact context for account managers.
-- Simple opportunity pipeline visibility.
-- Activity history for relationship follow-up.
-- Renewal-risk awareness for existing customers.
-- Synthetic Finnish B2B consultancy demo data.
-- Behavioural evidence that the core workflows work.
+1. **Who are our customers?** — See accounts and contacts (list + detail); understand who belongs to which company.
+2. **Who should we contact next?** — See recent activity per account and surface accounts that need follow-up (stale touchpoints).
+3. **Which opportunities are moving?** — See opportunities by stage; understand momentum in the pipeline.
+4. **Which renewals are at risk?** — See renewals approaching with weak recent engagement (read-only risk view).
+5. **What changed and can we trust it?** — Changes are reviewed against this brief, `DOMAIN_MODEL.md`, and automated tests; no silent scope creep.
 
 ## Non-goals
 
-Explicitly not in scope:
+- **Not a Salesforce replacement** — No parity with enterprise CRM configuration, automation builders, or AppExchange-style extensibility.
+- **No vague or “magic” AI in v1** — No LLM features, summarization, or autonomous outreach; deterministic behavior and explicit data only unless a future lab explicitly adds AI with constraints.
+- **No production customer data in this repository** — Only synthetic fixtures under `seeds/`; never paste real credentials, invoices, or account numbers into code or prompts.
+- **No hidden integrations** — No background sync to external CRMs, billing systems, or data warehouses unless explicitly scoped in a future change with reviewed config.
+- **Invoicing and billing are out of scope** — Invoicing, invoices, and **invoice amounts are not part of this product**; do not model, display, or expose them in API or UI.
 
-- Not Salesforce, HubSpot, or Microsoft Dynamics.
-- No vague AI features.
-- No production customer data.
-- No hidden external integrations.
-- No marketing automation, mass email campaigns, or lead scoring.
-- No support ticketing or helpdesk product.
-- No invoicing, payments, payroll, ERP, or accounting workflows.
-- No resource planning, time tracking, or HR management.
+## Privacy and data-handling constraints
 
-## Privacy constraints
-
-- Use synthetic data only.
-- Treat B2B contact details as personal data.
-- Keep customer information business-relevant.
-- Do not expose invoice amounts in the UI or user-facing responses.
-- Do not introduce sensitive personal details or unrelated commercial data.
+- **Invoice-related amounts must never appear in the UI or public API** — There is no invoicing feature; amounts billed or similar must not be introduced. (The domain explicitly flags any literal `invoiceAmount` field as a violation.)
+- **Internal commercial fields stay internal** — `Opportunity.value` (deal size) exists for internal modeling only and **must not appear in API responses or UI**; see `DOMAIN_MODEL.md` § Forbidden in API.
 
 ## Demo-data assumptions
 
-All customers, contacts, activities, opportunities, and renewal scenarios are fictional. Demo data should feel plausible for a Finnish IT consultancy but must not describe real customers or real private individuals.
+- All runtime and test data is **synthetic** and loaded from **`seeds/`** (e.g. `seeds/accounts.json`).
+- Data is safe to share in labs; it must not be replaced with real client exports.
 
-## Acceptance evidence
+## Acceptance evidence (slice done)
 
-Before declaring a slice done, show evidence that an account manager can answer the relevant workflow question without violating the product boundary or privacy constraints.
+Before declaring a vertical slice complete:
 
-Examples:
-
-- Customer context answers "who are our customers?"
-- Activity context answers "who should we contact next?"
-- Pipeline context answers "which opportunities are moving?"
-- Renewal context answers "which renewals are at risk?"
-- Review evidence confirms no production data, invoicing scope, hidden integrations, or vague AI features were added.
+1. **Automated tests** for that slice pass (`npm test`), including any new tests added for the slice contract.
+2. **Domain compliance** — Implementation matches `DOMAIN_MODEL.md`; no forbidden fields in API or UI; no invented fields without updating the domain model first.
+3. **Review** — A reviewer checks the diff against this brief, `DOMAIN_MODEL.md`, and the slice’s `TASK.md` / `DONE_CRITERIA.md` (when produced by the planner Skill); the decision is explicitly **accept**, **revise**, or **reject** with concrete findings—not “looks fine.”
