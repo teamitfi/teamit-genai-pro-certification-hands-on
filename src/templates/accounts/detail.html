@@ -1,0 +1,39 @@
+{{define "content"}}
+{{with .Account}}
+<section class="page-account-detail">
+  <p><a href="/accounts">&larr; Back to accounts</a></p>
+  <header class="account-header">
+    <h1>{{.Name}}</h1>
+    <dl class="account-meta">
+      <div>
+        <dt>Industry</dt>
+        <dd>{{.Industry}}</dd>
+      </div>
+      {{if .RenewalDate}}
+      <div class="account-meta__renewal">
+        <dt>Renewal date</dt>
+        <dd><time datetime="{{deref .RenewalDate}}">{{deref .RenewalDate}}</time></dd>
+      </div>
+      {{end}}
+    </dl>
+  </header>
+
+  <section class="contacts">
+    <h2>Contacts</h2>
+    {{if .Contacts}}
+    <ul class="contacts-list">
+      {{range .Contacts}}
+      <li class="contact">
+        <p class="contact__name">{{.Name}}</p>
+        <p class="contact__role">{{.Role}}</p>
+        <p class="contact__email"><a href="mailto:{{.Email}}">{{.Email}}</a></p>
+      </li>
+      {{end}}
+    </ul>
+    {{else}}
+    <p class="empty-state">No contacts on file for this account yet.</p>
+    {{end}}
+  </section>
+</section>
+{{end}}
+{{end}}
