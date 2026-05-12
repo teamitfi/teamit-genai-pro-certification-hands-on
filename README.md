@@ -9,7 +9,7 @@
 You need:
 
 - **A coding harness, authenticated.** Claude Code (Pro+) is recommended — the Skills layer the labs build on is most natively supported there. Other harnesses are accepted: Codex CLI, OpenCode, Pi, Cursor, Aider, Cline/Continue, Copilot Agent Mode. If you bring something else, see [Harness translation](#harness-translation) below.
-- **A second harness for Session 2** (optional). The "while you wait" task on Lab S2.1 includes a Copilot translation — Copilot in VS Code or JetBrains is the easiest path if you take it. Skip if your client doesn't use Copilot.
+- **A second reviewer perspective for Session 2** (optional). The "while you wait" task on Lab S2.1 can be done with a fresh session in the same harness, a different model, or another agent harness if you have access. Copilot is one possible option, not a requirement.
 - **Node 20+** installed (`node --version`).
 - **A laptop you can install dependencies on.** No office-wifi allowlist is in place; internet egress is open.
 
@@ -294,7 +294,7 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 
 1. Sketch one _additional_ reviewer Skill for your current client (e.g., `legacy-migration-reviewer`, `accessibility-reviewer`); write its description.
 2. List two failure modes from the deck slide "Where Agents Fail in a CRM Build" your reviewer should catch.
-3. **Copilot translation (optional, was Lab S2.4 in earlier versions of this curriculum).** Translate `crm-reviewer` to `.github/agents/crm-reviewer.md` with YAML frontmatter and Copilot-flavored phrasing. Add a short `.github/copilot-instructions.md` that points at the agent and inherits conventions from your `AGENTS.md` / `CLAUDE.md`. Run Copilot's Code Review Agent on the `seeded-bad-build` diff and save 5 bullets in `lab-s2-1-copilot-comparison.md` — where Copilot caught what your Skill didn't, and vice versa. Recommended for anyone whose client uses Copilot day-to-day.
+3. **Second reviewer perspective (optional, was the Copilot-translation lab in earlier versions).** Run an independent review of the `seeded-bad-build` diff using one of: a fresh session in the same harness, a different model, another agent harness, or Copilot Code Review Agent if you already have access. Save 5 bullets in `lab-s2-1-reviewer-comparison.md` — where the second reviewer caught what your `crm-reviewer` Skill didn't, and vice versa. If you do use Copilot, you may also translate `crm-reviewer` to `.github/agents/crm-reviewer.md` and add `.github/copilot-instructions.md`, but Copilot access is not required for the lab.
 
 ---
 
@@ -411,7 +411,7 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 **While you wait:**
 
 1. Add a second tool: `get_account_by_id`. Notice how scope creep happens — write down what you'd add next and why a reviewer should push back.
-2. Sketch the same server in a second language (10 lines, not running) — note where the SDK shape diverges. Same cross-tool fluency lesson as the old Copilot-translation lab, applied to MCP.
+2. Sketch the same server in a second language (10 lines, not running) — note where the SDK shape diverges. Same cross-tool fluency lesson as the second-reviewer lab, applied to MCP.
 
 ---
 
