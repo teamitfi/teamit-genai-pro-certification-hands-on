@@ -8,5 +8,18 @@
       "Write(./.env.*)",
       "Write(./secrets/**)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); echo \"$input\" | grep -qE '\"file_path\"\\s*:\\s*\"[^\"]*src/' && echo \"$input\" | grep -q 'invoiceAmount' && { echo 'hook: forbidden field invoiceAmount blocked in src/ (see DOMAIN_MODEL.md)' >&2; exit 2; } || exit 0"
+          }
+        ]
+      }
+    ]
   }
 }
