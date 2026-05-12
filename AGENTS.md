@@ -73,12 +73,14 @@ agent reading only `AGENTS.md` still gets the rules.
 ## Off-limits files
 
 Files an agent must not read, write, or edit without an explicit lab instruction. Where
-applicable, deny rules in `.claude/settings.json` enforce this at the harness layer.
+applicable, deny rules in `.claude/settings.json` (Claude Code) and `opencode.json`
+(OpenCode) enforce this at the harness layer. `.env.example` is allowed by both rule
+sets so a checked-in template can ship without bypassing the deny list.
 
 | Path / pattern                | Why                                                              | Enforced by                |
 | ----------------------------- | ---------------------------------------------------------------- | -------------------------- |
-| `.env`, `.env.*`              | Secrets / environment config; leak risk.                         | `.claude/settings.json` deny |
-| `secrets/**`                  | Reserved for any secret material, even if currently empty.        | `.claude/settings.json` deny |
+| `.env`, `.env.*`              | Secrets / environment config; leak risk.                         | `.claude/settings.json` + `opencode.json` deny |
+| `secrets/**`                  | Reserved for any secret material, even if currently empty.        | `.claude/settings.json` + `opencode.json` deny |
 | `scripts/`                    | Lab helper scripts — modifying them invalidates lab evidence.    | Convention only            |
 | `DOMAIN_MODEL.md`             | Schema source of truth — propose changes via the `crm-domain-modeler` skill. | Convention only |
 
