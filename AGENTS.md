@@ -113,6 +113,8 @@ When the first UI lands, follow these conventions:
 
 - Server returns full HTML pages (and HTMX partials for swaps) — no JSON-only
   pages, no client-side router.
+- This is a backend-driven multipage application, use a new page when adding something new.
+  Use an anchor to a new page instead of a modal for example.
 - HTMX attributes (`hx-get`, `hx-post`, `hx-swap`, …) drive interactivity.
 - Alpine.js is the fallback for purely-local UI state (toggles, dropdowns) and
   lives inline in `<script>` tags or `x-data` attributes — no separate JS
