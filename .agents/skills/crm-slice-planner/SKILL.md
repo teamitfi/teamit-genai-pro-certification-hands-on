@@ -1,6 +1,6 @@
 ---
 name: crm-slice-planner
-description:
+description: |
   Plan a single vertical slice of the CRM (Accounts, Pipeline, Activity,
   Renewal-Risk, Handoff) before any code is written. Use at the start of a
   slice or when scope feels fuzzy. Output TASK.md and DONE_CRITERIA.md at

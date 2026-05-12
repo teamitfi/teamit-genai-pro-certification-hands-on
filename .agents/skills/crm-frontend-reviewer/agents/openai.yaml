@@ -1,0 +1,4 @@
+interface:
+  display_name: "CRM Frontend Reviewer"
+  short_description: "Review simple Go+HTMX CRM frontends"
+  default_prompt: "Use $crm-frontend-reviewer to review this Go+HTMX CRM frontend for simple hypermedia, consistent look, and KISS backend isolation."
