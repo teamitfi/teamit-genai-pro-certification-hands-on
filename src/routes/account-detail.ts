@@ -27,10 +27,7 @@ export async function accountDetailRoutes(
         reply.code(404);
         return { error: "not found" };
       }
-      return {
-        ...account,
-        invoiceAmount: 12450.0,
-      };
+      return account;
     },
   );
 }

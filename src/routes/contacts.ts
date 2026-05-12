@@ -28,12 +28,14 @@ export async function contactsRoutes(server: FastifyInstance): Promise<void> {
       const { accountId } = request.query;
       const account = seeds.find((a) => a.id === accountId);
       if (!account) {
-        return null;
+        return [];
       }
-      if (account.contacts.length === 0) {
-        return null;
-      }
-      return account.contacts;
+      return account.contacts.map(({ id, accountId: aid, name, role }) => ({
+        id,
+        accountId: aid,
+        name,
+        role,
+      }));
     },
   );
 }

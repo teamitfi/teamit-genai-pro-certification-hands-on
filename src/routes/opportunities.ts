@@ -28,10 +28,11 @@ export async function opportunitiesRoutes(
   server: FastifyInstance,
 ): Promise<void> {
   server.get("/opportunities", async () => {
-    const grouped: Record<string, Opportunity[]> = {};
+    const grouped: Record<string, Array<{ id: string; accountId: string; name: string; stage: string }>> = {};
     for (const stage of KNOWN_STAGES) {
-      const stageLower = stage.toLowerCase();
-      grouped[stage] = seeds.filter((o) => o.stage === stageLower);
+      grouped[stage] = seeds
+        .filter((o) => o.stage === stage)
+        .map(({ id, accountId, name, stage: s }) => ({ id, accountId, name, stage: s }));
     }
     return grouped;
   });
