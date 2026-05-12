@@ -2,7 +2,7 @@
 # Lab S2.3 — pre-commit guard (harness-agnostic fallback).
 #
 # Activate by copying the sample hook:
-#   cp .git/hooks/pre-commit.sample .git/hooks/pre-commit
+#   cp scripts/pre-commit.sample .git/hooks/pre-commit
 #   chmod +x .git/hooks/pre-commit
 #
 # Three checks, all on the staged diff:
