@@ -4,9 +4,10 @@
 
 Hands-on lab repo for Teamit's **GenAI Pro Certification**. Participants build a
 small CRM across two sessions; the CRM is the *vehicle*. The lasting deliverable
-is a reusable Skill library under `.claude/skills/` (planner, reviewer, domain
+is a reusable Skill library under `.agents/skills/` (planner, reviewer, domain
 modeler, fixtures, handoff writer) that's portable into a real client
-engagement.
+engagement. `.claude` is a compatibility symlink to `.agents`, matching
+`CLAUDE.md -> AGENTS.md`.
 
 `README.md` describes the original TypeScript/Fastify starter; the current
 branch is a **Go rewrite** — trust this file and `go.mod`, not the README's

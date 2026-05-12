@@ -1,85 +1,140 @@
 ---
 name: crm-frontend-reviewer
-description: [TODO: Complete and informative explanation of what the skill does and when to use it. Include WHEN to use this skill - specific scenarios, file types, or tasks that trigger it.]
+description: |
+  Review Go+HTMX CRM frontend diffs, templates, route handlers, static CSS,
+  HTMX interactions, and UI tests for the simplest possible hypermedia
+  website. Use when asked for a frontend review, UI simplicity check,
+  KISS review, page consistency check, HTMX/hypermedia review, or backend
+  code isolation review. Always return Findings, Missing evidence,
+  KISS risks, Consistency/backend isolation, and an explicit Decision of
+  accept, revise, or reject.
 ---
 
-# Crm Frontend Reviewer
+# CRM Frontend Reviewer
 
-## Overview
+Review the CRM frontend as a small, server-rendered website: HTML carries the
+application, links and forms are first-class controls, and HTMX is only used to
+complete useful hypermedia interactions.
 
-[TODO: 1-2 sentences explaining what this skill enables]
+Inputs:
 
-## Structuring This Skill
+- The diff under review: working tree, patch, commit range, or PR.
+- `TASK.md` and `DONE_CRITERIA.md`, if present.
+- `PRODUCT_BRIEF.md` for the five workflow questions, non-goals, and privacy
+  posture.
+- `DOMAIN_MODEL.md` for fields that may appear in the UI.
+- Go route/template/static files under `src/`, plus any UI test output.
 
-[TODO: Choose the structure that best fits this skill's purpose. Common patterns:
+Workflow:
 
-**1. Workflow-Based** (best for sequential processes)
-- Works well when there are clear step-by-step procedures
-- Example: DOCX skill with "Workflow Decision Tree" -> "Reading" -> "Creating" -> "Editing"
-- Structure: ## Overview -> ## Workflow Decision Tree -> ## Step 1 -> ## Step 2...
+1. Read the task and done criteria first. Treat them as the claim the frontend
+   must prove.
+2. Read `PRODUCT_BRIEF.md` and `DOMAIN_MODEL.md`. Flag UI fields, workflows,
+   screens, or interactions outside those boundaries.
+3. Inspect the route, template, partial, static CSS, and test diff together.
+   Verify the rendered user path, not only the handler shape.
+4. Check whether each screen is the simplest useful page for its workflow.
+   Prefer plain HTML, server-rendered pages, anchors, forms, and normal HTTP
+   semantics before adding local state or JavaScript.
+5. Check whether HTMX improves hypermedia instead of replacing it. HTMX should
+   enhance links/forms with targeted swaps, progressive loading, filtering, or
+   small state transitions that still have understandable server routes.
+6. Check consistency of look without coupling backend code. Shared layout,
+   navigation, typography, spacing, empty states, tables/lists, and form
+   patterns are good; shared mega-handlers, cross-slice template conditionals,
+   and resource-specific logic hidden in global helpers are not.
+7. Compare claimed behavior to tests or manual evidence. Missing screenshots,
+   route checks, DOM assertions, or e2e coverage belong in **Missing evidence**.
 
-**2. Task-Based** (best for tool collections)
-- Works well when the skill offers different operations/capabilities
-- Example: PDF skill with "Quick Start" -> "Merge PDFs" -> "Split PDFs" -> "Extract Text"
-- Structure: ## Overview -> ## Quick Start -> ## Task Category 1 -> ## Task Category 2...
+KISS review checks:
 
-**3. Reference/Guidelines** (best for standards or specifications)
-- Works well for brand guidelines, coding standards, or requirements
-- Example: Brand styling with "Brand Guidelines" -> "Colors" -> "Typography" -> "Features"
-- Structure: ## Overview -> ## Guidelines -> ## Specifications -> ## Usage...
+- One screen answers one workflow question. Reject dashboard creep, hidden
+  integrations, marketing-page flourishes, and "just in case" columns.
+- Use real pages for new destinations. Prefer `<a href>` navigation over
+  modal-first or client-router behavior.
+- Allow generous linking: cards, rows, headings, and names may be anchors when
+  that makes the object directly reachable. Do not use JavaScript click
+  handlers where an anchor works.
+- Use forms for mutations and filters when possible. HTMX may submit them and
+  swap focused fragments, but the server route remains the source of truth.
+- Keep the DOM semantic and accessible: headings in order, labels for inputs,
+  table markup for tabular data, lists for lists, buttons for actions, anchors
+  for navigation.
+- Keep JavaScript minimal. Alpine.js is acceptable only for local UI state that
+  HTMX/HTML cannot express cleanly; no frontend build step, bundler, client
+  router, or JSON-only page shell.
+- Avoid clever abstractions. Prefer a few boring templates/partials over a
+  framework-shaped component system.
+- Empty, one-row, loading/error, and realistic loaded states should be explicit
+  and simple.
 
-**4. Capabilities-Based** (best for integrated systems)
-- Works well when the skill provides multiple interrelated features
-- Example: Product Management with "Core Capabilities" -> numbered capability list
-- Structure: ## Overview -> ## Core Capabilities -> ### 1. Feature -> ### 2. Feature...
+Consistency and isolation checks:
 
-Patterns can be mixed and matched as needed. Most skills combine patterns (e.g., start with task-based, add workflow for complex operations).
+- Shared look belongs in common layout/template primitives and static CSS:
+  page shell, navigation, type scale, spacing, tables/lists, badges, focus
+  states, and empty-state patterns.
+- Backend code stays isolated by workflow/resource. Keep route registration one
+  resource per file, handlers understandable from their own package/file, and
+  resource-specific rendering close to that resource.
+- Cross-page consistency must not require every page to know every other page.
+  Flag global conditionals, duplicated navigation constants that drift, or
+  shared helpers that branch on unrelated resource names.
+- CSS should be plain, reusable, and restrained. Flag one-off visual tweaks,
+  oversized decorative sections, nested cards, and styles that make the CRM feel
+  like a landing page instead of a working tool.
+- URLs should be stable, readable, and object-oriented enough to support links:
+  account/detail/contact/opportunity/activity pages should be reachable by
+  normal URL, not only through swapped fragments.
 
-Delete this entire "Structuring This Skill" section when done - it's just guidance.]
+Domain and privacy checks:
 
-## [TODO: Replace with the first main section based on chosen structure]
+- Render only fields declared in `DOMAIN_MODEL.md`.
+- Never expose `Opportunity.value` in frontend HTML, HTMX partials, data
+  attributes, comments, tests, screenshots, or static fixtures.
+- The literal `invoiceAmount` must never appear in `src/`.
+- Do not add analytics, third-party scripts, hidden external calls, real
+  customer-looking data, or tracking behavior.
+- Empty collections and empty UI states should be intentional; never rely on
+  `null` leaking into the page contract.
 
-[TODO: Add content here. See examples in existing skills:
-- Code samples for technical skills
-- Decision trees for complex workflows
-- Concrete examples with realistic user requests
-- References to scripts/templates/references as needed]
+Output schema:
 
-## Resources (optional)
+## Findings
 
-Create only the resource directories this skill actually needs. Delete this section if no resources are required.
+- List specific issues only. Each item must include `file:line`, severity,
+  what is wrong, why it violates the frontend/product contract, and the
+  expected fix.
+- If there are no findings, write `None.`
 
-### scripts/
-Executable code (Python/Bash/etc.) that can be run directly to perform specific operations.
+## Missing evidence
 
-**Examples from other skills:**
-- PDF skill: `fill_fillable_fields.py`, `extract_form_field_info.py` - utilities for PDF manipulation
-- DOCX skill: `document.py`, `utilities.py` - Python modules for document processing
+- List unproven UI claims, absent route checks, missing DOM assertions, missing
+  empty/boundary/loaded state proof, or tests that were not run.
+- If nothing is missing, write `None.`
 
-**Appropriate for:** Python scripts, shell scripts, or any executable code that performs automation, data processing, or specific operations.
+## KISS risks
 
-**Note:** Scripts may be executed without loading into context, but can still be read by Codex for patching or environment adjustments.
+- List risks that make the website more complex than necessary: client-side
+  routing, avoidable JavaScript, over-abstracted templates, modal-first flows,
+  bloated screens, decorative UI, or non-semantic controls.
+- If there are no KISS risks, write `None.`
 
-### references/
-Documentation and reference material intended to be loaded into context to inform Codex's process and thinking.
+## Consistency/backend isolation
 
-**Examples from other skills:**
-- Product management: `communication.md`, `context_building.md` - detailed workflow guides
-- BigQuery: API reference documentation and query examples
-- Finance: Schema documentation, company policies
+- State whether the frontend has a consistent look and whether backend code
+  remains isolated by resource/workflow.
+- List concrete drift or coupling issues with file references.
+- If there are no issues, write `None.`
 
-**Appropriate for:** In-depth documentation, API references, database schemas, comprehensive guides, or any detailed information that Codex should reference while working.
+## Decision
 
-### assets/
-Files not intended to be loaded into context, but rather used within the output Codex produces.
-
-**Examples from other skills:**
-- Brand styling: PowerPoint template files (.pptx), logo files
-- Frontend builder: HTML/React boilerplate project directories
-- Typography: Font files (.ttf, .woff2)
-
-**Appropriate for:** Templates, boilerplate code, document templates, images, icons, fonts, or any files meant to be copied or used in the final output.
-
----
-
-**Not every skill requires all three types of resources.**
+- Write exactly one of `accept`, `revise`, or `reject` as the first word.
+- Use `accept` only when there are no findings, no KISS risks, no consistency
+  or backend-isolation issues, required evidence is present, and relevant tests
+  pass.
+- Use `revise` when the frontend is directionally valid but needs simplification,
+  evidence, tests, consistency cleanup, or isolation fixes.
+- Use `reject` when the diff violates hard domain/privacy rules, introduces a
+  frontend build/client-router architecture, exposes forbidden fields, includes
+  `invoiceAmount` in `src/`, adds real data/tracking, or is fundamentally
+  outside the product boundary.
