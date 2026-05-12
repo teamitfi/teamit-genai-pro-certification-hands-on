@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Tracked pre-commit entrypoint. Activate with:
+#   git config --local core.hooksPath scripts/git-hooks
+
+set -euo pipefail
+
+exec "$(git rev-parse --show-toplevel)/scripts/lab-s2-3-wrapper.sh"

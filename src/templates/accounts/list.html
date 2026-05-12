@@ -1,0 +1,33 @@
+{{define "content"}}
+<section class="page-accounts-list">
+  <h1>Accounts</h1>
+  {{if .Accounts}}
+  <table class="accounts-table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Industry</th>
+        <th scope="col">Renewal date</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Accounts}}
+      <tr>
+        <td><a href="/accounts/{{.ID}}">{{.Name}}</a></td>
+        <td>{{.Industry}}</td>
+        <td>
+          {{if .RenewalDate}}
+            <time datetime="{{deref .RenewalDate}}">{{deref .RenewalDate}}</time>
+          {{else}}
+            <span class="muted" aria-label="No renewal date set">&mdash;</span>
+          {{end}}
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  {{else}}
+  <p class="empty-state">No accounts yet</p>
+  {{end}}
+</section>
+{{end}}

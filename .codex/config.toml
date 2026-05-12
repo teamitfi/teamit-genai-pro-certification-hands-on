@@ -1,0 +1,8 @@
+[mcp_servers.crm]
+command = "go"
+args = ["run", "./mcp"]
+required = true
+startup_timeout_sec = 20
+
+[mcp_servers.crm.env]
+CRM_API_BASE_URL = "http://localhost:3000"
