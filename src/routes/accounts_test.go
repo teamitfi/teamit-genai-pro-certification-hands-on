@@ -82,6 +82,49 @@ func TestWhoAreOurCustomers_ListsSeededAccounts(t *testing.T) {
 	assertNoNullLiteral(t, body)
 }
 
+func TestAccountsAPI_JSONListsSeededAccounts(t *testing.T) {
+	h := newServer(t, repoSeedPath(t, "seeds", "accounts.json"))
+	req := httptest.NewRequest(http.MethodGet, "/accounts", nil)
+	req.Header.Set("Accept", "application/json")
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", rec.Code)
+	}
+	if !strings.Contains(rec.Header().Get("Content-Type"), "application/json") {
+		t.Fatalf("Content-Type = %q, want application/json", rec.Header().Get("Content-Type"))
+	}
+
+	var accounts []Account
+	if err := json.Unmarshal(rec.Body.Bytes(), &accounts); err != nil {
+		t.Fatalf("decode response: %v\nbody:\n%s", err, rec.Body.String())
+	}
+	if len(accounts) != 5 {
+		t.Fatalf("expected 5 accounts, got %d", len(accounts))
+	}
+	for _, account := range accounts {
+		if account.ID == "33333333-3333-4333-8333-333333333333" && account.Contacts == nil {
+			t.Fatalf("Cetus contacts = nil, want empty slice")
+		}
+	}
+}
+
+func TestAccountsAPI_EmptySeedReturnsEmptyArray(t *testing.T) {
+	h := newServer(t, repoSeedPath(t, "seeds", "testdata", "empty.json"))
+	req := httptest.NewRequest(http.MethodGet, "/accounts", nil)
+	req.Header.Set("Accept", "application/json")
+	rec := httptest.NewRecorder()
+	h.ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200", rec.Code)
+	}
+	if body := strings.TrimSpace(rec.Body.String()); body != "[]" {
+		t.Fatalf("body = %q, want []", body)
+	}
+}
+
 func TestWhoAreOurCustomers_DetailShowsAccountAndContacts(t *testing.T) {
 	h := newServer(t, repoSeedPath(t, "seeds", "accounts.json"))
 	rec := get(t, h, "/accounts/22222222-2222-4222-8222-222222222222")

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 // Contact mirrors DOMAIN_MODEL.md.
@@ -123,6 +124,14 @@ func (h *AccountsHandler) Register(mux *http.ServeMux) {
 }
 
 func (h *AccountsHandler) handleList(w http.ResponseWriter, r *http.Request) {
+	if wantsJSON(r) {
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(h.accounts); err != nil {
+			http.Error(w, "encode accounts", http.StatusInternalServerError)
+		}
+		return
+	}
+
 	data := struct {
 		Title    string
 		Accounts []Account
@@ -131,6 +140,16 @@ func (h *AccountsHandler) handleList(w http.ResponseWriter, r *http.Request) {
 		Accounts: h.accounts,
 	}
 	h.render(w, h.listTpl, data)
+}
+
+func wantsJSON(r *http.Request) bool {
+	for _, part := range strings.Split(r.Header.Get("Accept"), ",") {
+		mediaType := strings.TrimSpace(strings.SplitN(part, ";", 2)[0])
+		if mediaType == "application/json" {
+			return true
+		}
+	}
+	return false
 }
 
 func (h *AccountsHandler) handleDetail(w http.ResponseWriter, r *http.Request) {
