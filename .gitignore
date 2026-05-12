@@ -3,8 +3,12 @@ dist/
 coverage/
 .env
 .env.*
-!.env.example
 secrets/
+*.prod.*
+config/production.*
+*.db
+*.sqlite
+*.sqlite3
 *.log
 .DS_Store
 .idea/

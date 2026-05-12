@@ -123,15 +123,29 @@ When the first UI lands, follow these conventions:
 - CSS is plain CSS in static files served by the Go server. No Tailwind, no
   PostCSS, no Sass.
 
-## Off-limits files
+## Sensitive-file access guard
 
-Do not read, edit, or commit:
+This repo has a hard pre-commit guard for sensitive paths:
+`scripts/git-hooks/pre-commit` runs `scripts/sensitive-file-guard.sh --staged`.
+`scripts/git-hooks/pre-push` scans pushed commit ranges so bypassed commits are
+blocked before they leave this checkout.
+Keep the hook active with `git config --local core.hooksPath scripts/git-hooks`.
+
+Before every filesystem tool call, classify the target path(s). Refuse any read,
+write, diff, search, format, delete, move, commit, or generated patch that would
+touch sensitive files. Do not inspect the file first to decide whether it is
+sensitive; the path match is enough.
+
+Blocked paths and patterns:
 
 - `.env`, `.env.*` — local secrets and env overrides.
 - `secrets/` — anything under this directory, ever.
 - Production config files: anything matching `*.prod.*`, `config/production.*`,
   or files explicitly marked as production deployment configs.
-- The SQLite database file(s) themselves (e.g. `*.db`, `*.sqlite`) — schema
-  changes go through migrations, not by editing the binary.
+- SQLite database file(s), including `*.db`, `*.sqlite`, and `*.sqlite3`.
 
-If a task seems to require touching one of these, stop and ask the user.
+This guard also applies to broad commands. Recursive reads, searches, formatters,
+test helpers, archive commands, or commit staging commands must exclude the
+blocked paths before running. If a requested task appears to require one of these
+paths, respond with a refusal and ask for a non-sensitive fixture, redacted copy,
+or instructions that avoid the blocked file.

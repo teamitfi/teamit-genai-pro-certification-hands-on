@@ -1,14 +1,12 @@
 #!/usr/bin/env bash
 # Lab S2.3 — pre-commit guard (harness-agnostic fallback).
 #
-# Activate by copying the sample hook:
-#   cp scripts/pre-commit.sample .git/hooks/pre-commit
-#   chmod +x .git/hooks/pre-commit
+# Activate the tracked hook:
+#   git config --local core.hooksPath scripts/git-hooks
 #
-# Three checks, all on the staged diff:
-#   1. Refuses commits that touch .env or .env.* files.
-#   2. Refuses commits that touch anything under secrets/.
-#   3. Refuses commits that introduce the literal `invoiceAmount` in src/.
+# Checks, all on the staged diff:
+#   1. Refuses commits that touch blocked sensitive paths.
+#   2. Refuses commits that introduce the literal `invoiceAmount` in src/.
 
 set -euo pipefail
 
@@ -17,19 +15,9 @@ fail() {
   exit 1
 }
 
-staged=$(git diff --cached --name-only --diff-filter=ACMR)
+repo_root="$(git rev-parse --show-toplevel)"
 
-while IFS= read -r path; do
-  [ -z "$path" ] && continue
-  case "$path" in
-    .env|.env.*)
-      fail "refuses to commit .env file: $path"
-      ;;
-    secrets/*)
-      fail "refuses to commit anything under secrets/: $path"
-      ;;
-  esac
-done <<< "$staged"
+"$repo_root/scripts/sensitive-file-guard.sh" --staged
 
 if git diff --cached -- 'src/*' 'src/**/*' 2>/dev/null | grep -qE '^\+.*invoiceAmount'; then
   fail "refuses to commit forbidden field 'invoiceAmount' in src/ (see DOMAIN_MODEL.md)"
