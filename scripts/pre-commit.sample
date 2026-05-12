@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Sample git pre-commit hook for Lab S2.3.
+# Copy into .git/hooks/pre-commit and make executable:
+#   cp scripts/pre-commit.sample .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+
+exec "$(git rev-parse --show-toplevel)/scripts/lab-s2-3-wrapper.sh"
