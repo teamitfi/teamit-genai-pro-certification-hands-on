@@ -8,5 +8,19 @@
       "Write(./.env.*)",
       "Write(./secrets/**)"
     ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Read|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 .claude/hooks/block-sensitive-files.py",
+            "statusMessage": "Checking for sensitive file access..."
+          }
+        ]
+      }
+    ]
   }
 }
