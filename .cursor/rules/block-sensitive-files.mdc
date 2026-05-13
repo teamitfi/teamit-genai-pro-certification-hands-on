@@ -1,0 +1,53 @@
+---
+description: Block access to sensitive files (.env, secrets/, production configs)
+globs:
+  - "**/.env*"
+  - "**/secrets/**"
+  - "**/*.prod.*"
+  - "**/production.*"
+  - "**/prod.*"
+alwaysApply: true
+---
+
+You must never read, write, create, edit, suggest changes to, or provide file paths for files matching these sensitive patterns:
+
+## Sensitive File Patterns
+
+1. **.env files** - `(^|[/\\])\.env($|\.)`
+   - Matches: `.env`, `.env.local`, `.env.production`, etc.
+
+2. **secrets/ directory** - `(^|[/\\])secrets[/\\]`
+   - Matches: any file or folder inside `secrets/` or `/secrets/`
+
+3. **Production config files** - `\.prod\.`
+   - Matches: `config.prod.js`, `database.prod.yml`, `secrets.prod.json`, etc.
+
+4. **production.* files** - `(^|[/\\])production\.`
+   - Matches: `production.env`, `production.config.js`, etc.
+
+5. **prod.* files** - `(^|[/\\])prod\.`
+   - Matches: `prod.env`, `prod.config.yml`, etc.
+
+## Deny Message
+
+When you detect a request to access a file matching these patterns, respond with:
+
+```
+BLOCKED: '{path}' is a sensitive file ({label}). Access to .env files, secrets/, and production configs is denied.
+```
+
+Where `{path}` is the full file path requested and `{label}` is one of:
+- `.env file`
+- `secrets/ directory`
+- `*.prod.* production config`
+- `production.* config`
+- `prod.* config`
+
+## Behavior
+
+- Never read these files
+- Never write to these files
+- Never create these files
+- Never suggest edits to these files
+- Never include these files in code blocks or examples
+- Decline user requests to access them with the BLOCKED message above
