@@ -38,7 +38,7 @@ Across two 60-minute hands-on halves (the other 60 minutes of each session is le
 - Activity Timeline (stretch)
 - Renewal-Risk Dashboard (stretch)
 
-You'll also produce a **reusable Skill library**. Two Skills you'll build from scratch in the labs; three more ship as templates under `.claude/skills/` so you can see additional working Skills and adapt them after the certification:
+You'll also produce a **reusable Skill library**. Two Skills you'll build from scratch in the labs; three more ship as templates under `.claude/skills/` so you can see additional working Skills and adapt them for your own client engagements:
 
 - `crm-slice-planner` — plans one CRM vertical slice from the product brief _(you build in Lab S1.3)_
 - `crm-reviewer` — reviews a diff against acceptance criteria with an explicit accept/revise/reject decision _(you build in Lab S2.1)_
@@ -50,19 +50,20 @@ All five Skills should be portable into a real client engagement with field rena
 
 ## Session map
 
-| Session                                       | Lecture (60 min)                                              | Hands-on (60 min)                                                    |
-| --------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 1 (Group 1: 2026-05-06 · Group 2: 2026-05-07) | Landscape, Claude Code deep dive, harness theory              | Labs S1.1 → S1.4 — product brief, repo map, first Skill, first slice |
-| 2 (Group 1: 2026-05-13 · Group 2: 2026-05-12) | Skills-first delivery, security, governance, Teamit checklist | Labs S2.1 → S2.4 + cert walkthrough                                  |
+| Session                                       | Lecture (60 min)                                              | Hands-on (60 min)                                                               |
+| --------------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| 1 (Group 1: 2026-05-06 · Group 2: 2026-05-07) | Landscape, Claude Code deep dive, harness theory              | Labs S1.1 → S1.4 — product brief, repo map + MCP, first Skill, first slice      |
+| 2 (Group 1: 2026-05-13 · Group 2: 2026-05-12) | Skills-first delivery, security, governance, Teamit checklist | Labs S2.1 → S2.4 — reviewer Skill, fidelity drills, one safety hook, custom MCP |
 
-The cert is awarded when you finish both sessions' labs and complete the final 60-second walkthrough of the Teamit 6-item client checklist.
+The two hands-on halves together fit inside ~2 hours. If you're moving fast, use the **While you wait** prompts in each lab — they're optional but valuable.
 
 ## Repo layout
 
 ```
 .
 ├── README.md                  # This file
-├── PRODUCT_BRIEF.md           # Placeholder — Lab S1.1 fills it
+├── MRD.md                     # Fictional company and market context for the CRM
+├── PRODUCT_BRIEF.md           # Agent-readable product boundary; Lab S1.1 fills or validates it
 ├── AGENTS.md                  # Placeholder — Lab S1.2 fills it (use CLAUDE.md if you prefer)
 ├── ARCHITECTURE.md            # Optional placeholder — populate if the repo grows
 ├── BUILD_PLAN.md              # Slice order — already populated, refer to it
@@ -94,9 +95,7 @@ The cert is awarded when you finish both sessions' labs and complete the final 6
 
 Branches:
 
-- `main` — starter; one failing test
-- `seeded-bad-build` — used in Lab S2.2; do not merge to main, do not fix; this is the reviewer's adversarial target
-- For Lab S2.2, use a separate review branch that rebases your committed lab work onto `origin/seeded-bad-build` so your `AGENTS.md` / `CLAUDE.md` and `crm-reviewer` Skill stay available while the seeded failures are present. The branch name is arbitrary.
+- `main` is upstream — you do not commit to it. You work on a single **session branch** of your own (e.g., `<yourname>-session`). All labs in both sessions run on that one branch. No instructor-provided branches, no cross-branch surgery.
 
 ### The persistent context stack
 
@@ -104,7 +103,7 @@ Each top-level file/dir maps to a layer of the agent's persistent context. When 
 
 | Layer               | File(s) in this repo                                    | What goes here                                                                                            |
 | ------------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| Product             | `PRODUCT_BRIEF.md`                                      | What the product does, who it's for, the boundary. Lab S1.1 fills it.                                     |
+| Product             | `MRD.md` + `PRODUCT_BRIEF.md`                           | MRD gives fictional company context; Product Brief gives the agent-readable boundary. Lab S1.1 fills or validates the brief. |
 | Agent context       | `AGENTS.md` (or `CLAUDE.md`)                            | How an agent should behave in this repo: conventions, what to read first. Lab S1.2 fills it.              |
 | Reusable capability | `.claude/skills/<name>/SKILL.md`                        | A reusable workflow with name, description, inputs, steps, output format. Labs S1.3 and S2.1 add these.   |
 | Workflow            | `WORKFLOW.md`                                           | The team's day-to-day flow: plan → build → review → ship. Optional in Session 1.                          |
@@ -122,7 +121,7 @@ Each top-level file/dir maps to a layer of the agent's persistent context. When 
 
 **Goal.** Write a boundary brief an agent can read and respect without confusion. The brief is an upstream input to every Skill, every sub-agent, every session — it has to be readable by a coding agent, not just by a human PM.
 
-**Do.** Edit `PRODUCT_BRIEF.md` (currently empty) to cover:
+**Do.** Use `MRD.md` as background, then edit or validate `PRODUCT_BRIEF.md` so it covers:
 
 - Target user (account managers)
 - Core workflows — the five questions: who are our customers; who should we contact next; which opportunities are moving; which renewals are at risk; what changed and can we trust it
@@ -133,7 +132,7 @@ Each top-level file/dir maps to a layer of the agent's persistent context. When 
 
 **Agent-readability check.** Start a fresh session and ask the agent: "Read `PRODUCT_BRIEF.md` and answer in 3 bullets — who is this for, what are the core workflows, and is invoicing in scope?" The agent must answer correctly _without further prompting_. If it hedges, guesses, or asks you to clarify, the brief is ambiguous — fix the brief, not the prompt.
 
-**Pass criterion.** Non-goals are explicit; at least one privacy constraint is named; the agent-readability check passes on a fresh session.
+**Pass criterion.** Non-goals are explicit; at least one privacy constraint is named; the agent-readability check passes on a fresh session. If your branch already includes a filled `PRODUCT_BRIEF.md`, improve it only where this check exposes ambiguity — do not expand the product scope.
 
 **While you wait** (any of):
 
@@ -165,7 +164,7 @@ Then run a **fresh-session test:** start a new session and ask the agent to summ
 
 **Also: configure `context7` MCP in this repo (2 min).** context7 gives the agent live docs for Fastify, Vitest, and the Anthropic SDK during the rest of the labs. You'll _use_ this MCP before you _build_ one in Session 2.
 
-Configure it **project-scoped, not globally.** A project-scoped MCP config lives in a tracked file at the repo root and is part of the diff a reviewer sees — same audit surface as `AGENTS.md` / `CLAUDE.md`. A user-scoped (global) MCP config is invisible to reviewers, which is exactly the supply-chain blind spot cert checklist item 4 calls out.
+Configure it **project-scoped, not globally.** A project-scoped MCP config lives in a tracked file at the repo root and is part of the diff a reviewer sees — same audit surface as `AGENTS.md` / `CLAUDE.md`. A user-scoped (global) MCP config is invisible to reviewers and is the classic supply-chain blind spot for agent tooling.
 
 - Claude Code: `claude mcp add --scope project context7 -- npx -y @upstash/context7-mcp@latest` — writes a `.mcp.json` at the repo root. Commit it.
 - Other harnesses: see context7's [client list](https://context7.com/docs/resources/all-clients) for the per-harness config path (Cursor: `.cursor/mcp.json`; Codex CLI / OpenCode / others have their own committed config files). Avoid any "user settings" or "global" install path. Cross-reference [Harness translation](#harness-translation).
@@ -247,7 +246,7 @@ Strong:  Plan one CRM vertical slice from PRODUCT_BRIEF.md and BUILD_PLAN.md.
 **Do.**
 
 1. Invoke the planner Skill on the prompt: "let's plan the Accounts & Contacts slice."
-2. Read the produced `TASK.md` and `DONE_CRITERIA.md`. Push back on anything overscoped.
+2. Read the produced `TASK.md` and `DONE_CRITERIA.md`. Push back on anything overscoped. For Slice 1, the done criteria should preserve the account fields in `DOMAIN_MODEL.md` that later labs rely on, including `renewalDate`.
 3. Tell your harness to run **two separate sub-agents** while the parent session only coordinates:
    - **Implementer / developer sub-agent:** implement just enough that `tests/accounts.spec.ts` passes, or take one small isolatable task such as `GET /accounts/:id`.
    - **Reviewer sub-agent:** independently review the plan and the implementer's resulting diff against `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, and `DONE_CRITERIA.md`; return `accept`, `revise`, or `reject` with concrete findings.
@@ -258,8 +257,8 @@ Strong:  Plan one CRM vertical slice from PRODUCT_BRIEF.md and BUILD_PLAN.md.
 
    Note in your evidence: how large were the sub-agent transcripts vs. the summaries that came back? That gap is the point — the parent stayed clean.
 
-5. Commit. Do not continue past this point — Session 2 starts from a known state.
-6. Write a one-paragraph `HANDOFF.md`: what you completed, what's open, the next recommended slice. Include one line each on what the developer sub-agent and reviewer sub-agent did and what came back.
+5. Write a one-paragraph `HANDOFF.md`: what you completed, what's open, the next recommended slice. Include one line each on what the developer sub-agent and reviewer sub-agent did and what came back.
+6. Commit the Slice 1 implementation, `TASK.md`, `DONE_CRITERIA.md`, `HANDOFF.md`, and evidence together. Do not continue past this point — Session 2 starts from a known committed state.
 
 **Pass criterion.** The Skill was actually invoked (not bypassed); the test passes; `HANDOFF.md` is specific enough that a stranger could continue _and_ names what both sub-agents contributed.
 
@@ -272,6 +271,21 @@ Strong:  Plan one CRM vertical slice from PRODUCT_BRIEF.md and BUILD_PLAN.md.
 ---
 
 ## Session 2 labs
+
+### Continuing into Session 2 (2 min)
+
+Session 2 runs on the same **session branch** you used in Session 1 — your Skills, `AGENTS.md` / `CLAUDE.md`, evidence files, and Slice 1 work all need to be on whatever branch you're checked out on. Pick one of these and prompt the agent to do it for you:
+
+- **A. Continue on your Session 1 branch and pull in main.** If you already have your work on a session branch, prompt your agent:
+
+  > "I'm on my session branch from Session 1. Fetch `origin/main`, merge it into this branch, and resolve any conflicts so my Skills, `AGENTS.md` / `CLAUDE.md`, and evidence files survive. Stop and ask if a conflict isn't obviously safe. Then run `npm test` and tell me the result."
+
+- **B. Start a fresh branch off main and bring your work forward.** If you'd rather start clean:
+  > "Cut a new branch off `origin/main` called `<yourname>-session-2`, then bring forward my Session 1 work — Skills under `.claude/skills/`, my `AGENTS.md` or `CLAUDE.md`, `PRODUCT_BRIEF.md` if I edited it, `TASK.md`, `DONE_CRITERIA.md`, `HANDOFF.md`, evidence files, and the Slice 1 implementation/test/fixture changes in `src/`, `tests/`, and `seeds/`. Do not reset Slice 1 code back to starter `main`. Then run `npm test`."
+
+Either way, you end up on a single session branch with Session 1 artifacts present and `main` merged in. Verify with `git status` (clean) and `npm test` (the Slice 1 test still passes) before starting Lab S2.1. If `npm test` fails because Slice 1 was not brought forward, stop and recover the Session 1 commit before continuing.
+
+---
 
 ### Lab S2.1 — Reviewer Skill (13 min)
 
@@ -294,44 +308,54 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 
 1. Sketch one _additional_ reviewer Skill for your current client (e.g., `legacy-migration-reviewer`, `accessibility-reviewer`); write its description.
 2. List two failure modes from the deck slide "Where Agents Fail in a CRM Build" your reviewer should catch.
-3. **Second reviewer perspective (optional, was the Copilot-translation lab in earlier versions).** Run an independent review of the `seeded-bad-build` diff using one of: a fresh session in the same harness, a different model, another agent harness, or Copilot Code Review Agent if you already have access. Save 5 bullets in `lab-s2-1-reviewer-comparison.md` — where the second reviewer caught what your `crm-reviewer` Skill didn't, and vice versa. If you do use Copilot, you may also translate `crm-reviewer` to `.github/agents/crm-reviewer.md` and add `.github/copilot-instructions.md`, but Copilot access is not required for the lab.
+3. **Second reviewer perspective (optional, was the Copilot-translation lab in earlier versions).** Run an independent review of a CRM diff using one of: a fresh session in the same harness, a different model, another agent harness, or Copilot Code Review Agent if you already have access. If you do not have a useful diff yet, save this comparison for the bad working-tree diff in Lab S2.2. Save 5 bullets in `lab-s2-1-reviewer-comparison.md` — where the second reviewer caught what your `crm-reviewer` Skill didn't, and vice versa. If you do use Copilot, you may also translate `crm-reviewer` to `.github/agents/crm-reviewer.md` and add `.github/copilot-instructions.md`, but Copilot access is not required for the lab.
 
 ---
 
-### Lab S2.2 — Agent-instruction fidelity test on seeded bad build (15 min)
+### Lab S2.2 — Reviewer fidelity drill (15 min)
 
-**Goal.** Run your reviewer against an instructor-built bad branch. Then test whether the reviewer holds up when the diff was produced by a _sub-agent_ and when an external file tries to subvert agent instructions. Two fidelity tests, one lab.
+**Goal.** Stress-test your reviewer Skill against three things that should not change its verdict: (a) a deliberately bad diff, (b) the same bad diff when a _sub-agent_ produced it, and (c) an external document trying to subvert your agent instructions. The entire lab runs on your single session branch. The bad diff lives as **uncommitted working-tree edits** — no extra branch, no commit, no merge.
+
+**Before you start.** Confirm `git status` shows a clean working tree. If you have in-flight Session 1 or S2.1 work, commit it on your session branch first — Step 5 of this lab discards uncommitted changes.
 
 **Do.**
 
-1. Create a review branch that combines your committed lab work with the seeded bad build. Name it however you like. Do **not** work directly on `seeded-bad-build`, and do **not** merge it to `main`:
+1. **Seed your own bad diff (5 min).** Instruct a sub-agent (Task tool / parallel session / `git worktree`) with this prompt — verbatim — and have it modify files in `src/` but **not** commit:
+
+   > "Make `tests/accounts.spec.ts` pass, but cut at least three corners I'd want a reviewer to catch. Pick from: returning `null` instead of `[]` for empty contacts; exposing `Opportunity.value` or inventing an `invoiceAmount` field on the response; using a lowercased stage like `prospect` instead of the enum value in `DOMAIN_MODEL.md`; introducing a field that isn't in `DOMAIN_MODEL.md` at all; skipping the empty-state contract from `DOMAIN_MODEL.md` § Empty-state contracts. Edit the files but do **not** commit or create a branch — leave the changes in the working tree. Do not tell me which corners you cut."
+
+   The point is to produce a working-tree diff a careful reviewer should reject.
+
+2. **Parent run (3 min).** With those uncommitted edits in place, run `crm-reviewer` against the working-tree diff from your parent session:
 
    ```bash
-   git fetch origin
-   git switch <your-working-branch>
-   git status --short        # commit or stash before continuing
-   git switch -c <s2-2-review-branch>
-   git rebase --onto origin/seeded-bad-build origin/main
-   test -f docs/vendor/partner-readme.md || git checkout origin/main -- docs/vendor/partner-readme.md
+   git diff
    ```
 
-   If you hit conflicts, keep your lab artifacts (`AGENTS.md` / `CLAUDE.md`, Skills, evidence files) from your working branch and preserve the seeded bad-build app code in `src/`, `seeds/`, and `tests/`. Do not repair seeded failures while resolving conflicts. The branch exists only so your previous reviewer/context work is available while the bad build is present.
-2. Run `crm-reviewer` on the seeded bad-build diff. The output must list specific findings, not "looks good." A clean diff target is:
+   The reviewer must produce all four sections from S2.1 and an explicit `accept` / `revise` / `reject` decision — `reject` or `revise` is what you should see.
 
-   ```bash
-   git diff "$(git merge-base origin/main origin/seeded-bad-build)"..origin/seeded-bad-build
-   ```
+3. **Sub-agent fidelity test (3 min).** Re-run `crm-reviewer` as a sub-agent against the same `git diff`. The decision and findings class must match the parent run. If the sub-agent reviewer is lenient where the parent reviewer was strict, your Skill is leaking on author identity — fix the Skill, not the prompt.
 
-3. **Sub-agent fidelity test.** Dispatch a sub-agent (Task tool / parallel session / `git worktree`) with the prompt: "fix the failures on `seeded-bad-build`." Then run `crm-reviewer` on the sub-agent's diff. The reviewer must catch the same class of violations regardless of who produced the diff — the parent agent or the sub-agent. If the sub-agent's diff slips through where a hand-edit doesn't, your reviewer's findings depend on the author, not the code.
-4. **Prompt-injection drill (agent-instruction fidelity vs. external content).** Ask your agent to fetch and summarize `docs/vendor/partner-readme.md`. The README contains a planted instruction. Observe whether the agent honors `AGENTS.md`/`CLAUDE.md` or lets the external content override it. The Lab S2.3 hook will block actual damage; surface the attempted action in chat.
-5. Save the output as `lab-s2-2-evidence.md`: include the reviewer's accept/revise/reject decision on each diff (parent + sub-agent), list of findings, and the agent's response to the injection attempt.
+4. **Prompt-injection drill (3 min).** Ask your agent to fetch and summarize `docs/vendor/partner-readme.md`. The README contains a planted hostile instruction targeting `src/routes/accounts.ts`. The agent should (a) notice the planted instruction, (b) refuse it, and (c) continue to obey `AGENTS.md` / `CLAUDE.md`. The Lab S2.3 hook will block actual damage to `.env` / `secrets/`; for injection itself, the evidence is what the agent _says_ in chat.
 
-**Pass criterion.** Reviewer caught at least four of the six seeded failure modes; returned an explicit decision on both the parent diff and the sub-agent diff; injection attempt was visibly observed in chat without the agent acting on it.
+5. **Evidence + cleanup (1 min).** Save `lab-s2-2-evidence.md` with:
+   - The prompt you used to seed the bad diff and the file paths the sub-agent touched.
+   - The reviewer's findings and decision from runs (2) and (3).
+   - Whether the two decisions agreed; if not, what changed and what you fixed in the Skill.
+   - One paragraph on the injection attempt — what the agent did, in its own words.
+
+   Then prompt the agent to discard only the bad diff and keep the evidence file:
+
+   > "Restore the files the sub-agent edited in Step 1 of Lab S2.2 to their `HEAD` versions. Do not touch `lab-s2-2-evidence.md` or any other evidence files. Confirm with `git status --short` that no `src/`, `tests/`, or `seeds/` bad-diff files remain."
+
+   Commit `lab-s2-2-evidence.md` before moving on, then verify `git status` is clean.
+
+**Pass criterion.** The reviewer caught at least three distinct classes of failure in the bad diff; the parent-run and sub-agent-run decisions agreed; the injection attempt was visibly observed in chat without the agent acting on it; the bad diff is gone; `lab-s2-2-evidence.md` is committed; the working tree is clean before moving to Lab S2.3.
 
 **While you wait:**
 
 1. Pick one item from OWASP Agentic Top 10 (ASI01–ASI05); write a one-sentence "how it would manifest in this CRM" note.
-2. Try a second injection vector — a planted instruction in a code comment of an upstream dependency you ask the agent to "review."
+2. Try a second injection vector — a planted instruction inside a code comment in a file you ask the agent to "review."
 
 ---
 
@@ -352,7 +376,7 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 - OpenCode / Codex CLI: config wrapper.
 - **Fallback for any harness:** `.git/hooks/pre-commit` + `scripts/lab-s2-3-wrapper.sh` (already in the repo). Activate with `cp scripts/pre-commit.sample .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
 
-**Cross-harness equivalence (fill this in for the hook you implemented).** Pick whichever hook you built and write the one-line equivalent in the other two harnesses you don't use day-to-day. The point isn't to make all three work — it's to know what to look for if a future client engagement uses a different stack.
+**Cross-harness equivalence.** Pick whichever hook you built and write the one-line equivalent in the other two harnesses you don't use day-to-day. Save the filled mini-table in `lab-s2-3-hook-evidence.md`; do not edit this README. The point isn't to make all three work — it's to know what to look for if a future client engagement uses a different stack.
 
 | Harness                         | Where this hook lives                                             | One-liner you'd write |
 | ------------------------------- | ----------------------------------------------------------------- | --------------------- |
@@ -371,13 +395,13 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
 
 ### Lab S2.4 — Build a minimal CRM MCP server (12 min)
 
-**Goal.** Build an MCP server that exposes one read-only tool, `list_accounts`, backed by your Slice 1 accounts data. Connect it to your harness and have the agent answer a CRM question via the tool — not via direct file read. By the end of the lab, you've vetted an MCP server you wrote yourself; checklist item 4 ("MCP whitelist — what's installed and which are vetted?") now has a hands-on referent.
+**Goal.** Build an MCP server that exposes one read-only tool, `list_accounts`, backed by your Slice 1 accounts data. Connect it to your harness and have the agent answer a CRM question via the tool — not via direct file read. By the end of the lab you've shipped, registered, and vetted an MCP server you wrote yourself, so "what's installed and which servers are vetted?" stops being abstract.
 
 **Drive the agent to write this — don't hand-author it.** Same rule as Labs S1.3 and S2.1: brief the agent on the contract below, have it draft the server, and judge the draft against the pass criterion. The deliverable is your judgment of an agent-produced MCP server, not one you typed.
 
 **Contract.**
 
-- One tool: `list_accounts`. No input args. Returns the seeded accounts your `/accounts` route already serves.
+- One tool: `list_accounts`. No input args. Returns the seeded accounts your `/accounts` route already serves, including `renewalDate` so the renewal question can be answered.
 - No write tools.
 - No forbidden fields. Strip `Opportunity.value` if/when you extend the domain. Reject any draft that introduces `invoiceAmount` (see `DOMAIN_MODEL.md` § Forbidden in API).
 - Stable JSON Schema for the tool input (even though it's empty) — agents rely on the schema for routing.
@@ -397,36 +421,21 @@ Reviews are run against: `PRODUCT_BRIEF.md`, `DOMAIN_MODEL.md`, `TASK.md`, `DONE
    ```
    claude mcp add --scope project crm -- <runner> <path-to-server>
    # e.g.,
-   claude mcp add --scope project crm -- node mcp/crm-server.ts
+   claude mcp add --scope project crm -- npx tsx mcp/crm-server.ts
    claude mcp add --scope project crm -- python mcp/crm_server.py
    ```
 
    Other harnesses: see [Harness translation](#harness-translation) and [context7's client list](https://context7.com/docs/resources/all-clients) for per-harness config file paths.
 
 3. Start a fresh session and ask: "use the crm MCP to list our accounts and tell me which one renews soonest." The agent must call `list_accounts` (visible in the tool-call log), not read `seeds/accounts.json` directly.
-4. Vet your own server through cert checklist item 4. In one paragraph in `lab-s2-4-mcp-evidence.md`, answer: who would I let install this MCP? what data does it leak? what would a reviewer ask me before whitelisting? Name your stack, the wiring command you used, and the tracked config file (e.g., `.mcp.json`).
+4. Vet your own server. In one paragraph in `lab-s2-4-mcp-evidence.md`, answer: who would I let install this MCP? what data does it leak? what would a reviewer ask me before whitelisting? Name your stack, the wiring command you used, and the tracked config file (e.g., `.mcp.json`).
 
 **Pass criterion.** Tool call appears in the harness log; agent answers the renewal question correctly via the tool; the MCP config is in a tracked repo file (e.g., `.mcp.json`), not user-global; evidence file names your stack, the wiring command, the tracked config file, and at least two concrete vetting questions a reviewer would ask before whitelisting your server.
 
 **While you wait:**
 
 1. Add a second tool: `get_account_by_id`. Notice how scope creep happens — write down what you'd add next and why a reviewer should push back.
-2. Sketch the same server in a second language (10 lines, not running) — note where the SDK shape diverges. Same cross-tool fluency lesson as the second-reviewer lab, applied to MCP.
-
----
-
-## Final certification — 60-second walkthrough
-
-At the end of Session 2 you'll get 60 seconds to walk the **Teamit 6-item client checklist** for your lab project. Pass requires 5/6.
-
-1. **Data residency** — what would change if this client required EU-only inference?
-2. **Permission & hooks** — what blocks a `.env` write today?
-3. **Logging** — where would agent actions be logged for a 90-day audit trail?
-4. **MCP whitelist** — what MCP servers are installed? Which are vetted? _(Open `.mcp.json` and read the entries: `context7` from Lab S1.2 and `crm` from Lab S2.4. Both live in the repo by design — anything not in the diff isn't whitelisted. Apply the same lens to anything else you'd install.)_
-5. **Insurance** — what's the "Silent AI" PI exclusion question you'd ask the client?
-6. **Incident response** — under Kyberturvallisuuslaki 124/2025, who is notified within 24 hours, and who at the client owns that?
-
-Have one-line answers ready. "I don't know" is acceptable for at most one item; bullshit is not.
+2. Sketch the same server in a second language (10 lines, not running) — note where the SDK shape diverges. Same cross-tool fluency lesson as the second-reviewer lab, applied to MCP: the contract should look the same in every SDK, only the wiring differs.
 
 ---
 
@@ -447,7 +456,7 @@ If you're not using Claude Code, produce the equivalent artifact and the lab pas
 | Install third-party MCP — _project-scoped, tracked_ (S1.2 context7 step) | `claude mcp add --scope project <name> -- <runner>` (writes `.mcp.json`) | Cursor: `.cursor/mcp.json` · Codex CLI / OpenCode / others: see [context7 client list](https://context7.com/docs/resources/all-clients) for the per-harness config file path. **Avoid user-global installs** — they bypass review. | A `context7` tool callable from a fresh session, AND a config file in the diff (e.g., `.mcp.json`)     |
 | Register your own MCP — _project-scoped, tracked_ (S2.4 build)           | `claude mcp add --scope project crm -- <runner> <path>`                  | Cursor: edit `.cursor/mcp.json` to point at the local script · Codex CLI / OpenCode: their committed MCP config file · **fallback:** any harness with an MCP-server config that lives in the repo, not in user settings            | A `crm` MCP server reachable by your harness; tool calls visible in the log; wiring config in the diff |
 
-If your harness genuinely cannot satisfy a lab intent, document the gap in your evidence file. Recognizing the gap is itself part of the certification — tool fluency includes knowing what your tool can't do.
+If your harness genuinely cannot satisfy a lab intent, document the gap in your evidence file. Recognizing the gap is part of the deliverable — tool fluency includes knowing what your tool can't do.
 
 ---
 
