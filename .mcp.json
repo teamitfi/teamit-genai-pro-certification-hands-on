@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "crm": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "tsx",
+        "mcp/crm-server.ts"
+      ],
+      "env": {}
+    }
+  }
+}
